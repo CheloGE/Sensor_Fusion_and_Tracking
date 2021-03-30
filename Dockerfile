@@ -14,11 +14,13 @@ RUN apt-get update --fix-missing && apt-get install -y \
     zip \
     zlib1g-dev
 
-RUN cd /home/A01375067/MRGE_workspace/Sensor_Fusion_and_Tracking/ && pip3 install -r requirements.txt
+WORKDIR /app
 
-WORKDIR /home/A01375067/app
+COPY requirements.txt .
 
-CMD ["printf", "***************************************\nSensor Fusion and Tracking Docker\nAuthor: Marcelo Garcia\n***************************************\n"]
+RUN pip3 install -r requirements.txt
+
+
 
 
 
