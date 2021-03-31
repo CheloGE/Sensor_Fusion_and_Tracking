@@ -65,7 +65,6 @@ def show_range_image(frame, lidar_name):
     roof_lidar_data = waymo_utils.get(frame.lasers, lidar_name)
     ri, _, _ = waymo_utils.parse_range_image_and_camera_projection(
         roof_lidar_data)
-    print(ri.shape)
     # step 2 : extract the range and the intensity channel from the range image
     # recall that range image contains the following data: [range, intensity, elongation, is_in_no_label_zone]
     range_ch = ri[:, :, 0]

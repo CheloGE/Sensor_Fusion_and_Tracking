@@ -53,7 +53,7 @@ sys.path.append(os.getcwd())
 data_filename = 'training_segment-1005081002024129653_5313_150_5333_150_with_camera_labels.tfrecord'  # Sequence 1
 # data_filename = 'segment-10072231702153043603_5725_000_5745_000_with_camera_labels.tfrecord' # Sequence 2
 # data_filename = 'segment-10963653239323173269_1924_000_1944_000_with_camera_labels.tfrecord' # Sequence 3
-show_only_frames = [0, 1]  # show only frames in interval for debugging
+show_only_frames = [0, 100]  # show only frames in interval for debugging
 
 # Prepare Waymo Open Dataset file for loading
 # adjustable path in case this script is called from another working directory
@@ -86,7 +86,7 @@ exec_tracking = []  # options are 'perform_tracking'
 exec_visualization = ['show_range_image']
 exec_list = make_exec_list(exec_detection, exec_tracking, exec_visualization)
 # set pause time between frames in ms (0 = stop between frames until key is pressed)
-vis_pause_time = 0
+vis_pause_time = 1
 
 
 ##################
@@ -187,7 +187,7 @@ while True:
             img_range = img_range.astype(np.uint8)
             cv2.imshow('range_image', img_range)
             cv2.waitKey(vis_pause_time)
-
+        
         if 'show_pcl' in exec_list:
             pcl.show_pcl(lidar_pcl)
 
