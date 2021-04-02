@@ -18,6 +18,9 @@ from tools.waymo_reader.simple_waymo_open_dataset_reader import utils as waymo_u
 import cv2
 import numpy as np
 import torch
+import matplotlib
+matplotlib.use('TkAgg') # backend for linux
+import matplotlib.pyplot as plt
 
 # add project directory to python path to enable relative imports
 import os
@@ -130,7 +133,10 @@ def bev_from_pcl(lidar_pcl, configs):
     bev_discrete_y = y_range/configs.bev_width
     lidar_pcl_cpy[:, 1] = np.abs(np.int_(np.floor(lidar_pcl_cpy[:, 1] / bev_discrete_y)+ (configs.bev_width + 1) / 2)) 
     # step 4 : visualize point-cloud using the function show_pcl from a previous task
-    show_pcl(lidar_pcl_cpy)
+    
+    # Uncomment to visualize:
+    #show_pcl(lidar_pcl_cpy) 
+    
     #######
     ####### ID_S2_EX1 END #######
 
@@ -138,19 +144,32 @@ def bev_from_pcl(lidar_pcl, configs):
     ####### ID_S2_EX2 START #######
     #######
     print("student task ID_S2_EX2")
-
+    ## The following code is based on classroom exercises "Lidar Sensor"
     # step 1 : create a numpy array filled with zeros which has the same dimensions as the BEV map
-
+    intensity_map = np.zeros((configs.bev_height, configs.bev_width))
     # step 2 : re-arrange elements in lidar_pcl_cpy by sorting first by x, then y, then -z (use numpy.lexsort)
-
+    # lexsort works by arranging last argument then second last and so for until the first argument. 
+    # example here: https://stackoverflow.com/questions/49460429/what-is-the-sorting-logic-behind-np-lexsort
+    lidar_pcl_cpy[lidar_pcl_cpy[:,3]>1.0,3] = 1.0 # clip outlier values
+    indexes = np.lexsort((-lidar_pcl_cpy[:, 2], lidar_pcl_cpy[:, 1], lidar_pcl_cpy[:, 0]))
+    lidar_pcl_cpy = lidar_pcl_cpy[indexes]
     # step 3 : extract all points with identical x and y such that only the top-most z-coordinate is kept (use numpy.unique)
     # also, store the number of points per x,y-cell in a variable named "counts" for use in the next task
-
+    _, idx_height_unique, counts = np.unique(lidar_pcl_cpy[:, 0:2], axis=0, return_index=True, return_counts = True)
+    lidar_top_pcl = lidar_pcl_cpy[idx_height_unique]
     # step 4 : assign the intensity value of each unique entry in lidar_top_pcl to the intensity map
     # make sure that the intensity is scaled in such a way that objects of interest (e.g. vehicles) are clearly visible
     # also, make sure that the influence of outliers is mitigated by normalizing intensity on the difference between the max. and min. value within the point cloud
-
+    normalized_intensities = lidar_top_pcl[:, 3] / (np.amax(lidar_top_pcl[:, 3])-np.amin(lidar_top_pcl[:, 3]))
+    intensity_map[np.int_(lidar_top_pcl[:, 0]), np.int_(lidar_top_pcl[:, 1])] = normalized_intensities
+    intensity_map[intensity_map>1.0] = 1.0
     # step 5 : temporarily visualize the intensity map using OpenCV to make sure that vehicles separate well from the background
+    ## To plot intensity image uncomment the following 4 lines
+    
+    img_intensity = (intensity_map * 255).astype(np.uint8) 
+    cv2.imshow('img_intensity', img_intensity)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
     #######
     ####### ID_S2_EX2 END #######
@@ -203,5 +222,3 @@ def bev_from_pcl(lidar_pcl, configs):
     input_bev_maps = bev_maps.to(configs.device, non_blocking=True).float()
     return input_bev_maps
 
-if __name__ == '__main__':
-    hello()
