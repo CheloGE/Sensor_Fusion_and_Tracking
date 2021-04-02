@@ -32,6 +32,11 @@ sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 # object detection tools and helper functions
 # library to visualize lidar images
 
+def next_frame_callback(vis_lidar_pc):
+    vis_lidar_pc.close()
+        
+def exit_callback(vis_lidar_pc):
+    vis_lidar_pc.destroy_window()
 
 # visualize lidar point-cloud
 def show_pcl(pcl):
@@ -39,17 +44,26 @@ def show_pcl(pcl):
     ####### ID_S1_EX2 START #######
     #######
     print("student task ID_S1_EX2")
-
     # step 1 : initialize open3d with key callback and create window
-
+    vis_lidar_pc = o3.visualization.VisualizerWithKeyCallback()
+    vis_lidar_pc.create_window(window_name='Lidar Point Cloud')
     # step 2 : create instance of open3d point-cloud class
-
+    pcd = o3.geometry.PointCloud()
     # step 3 : set points in pcd instance by converting the point-cloud into 3d vectors (using open3d function Vector3dVector)
-
+    # The reason in this step is that point cloud first three channels have (x,y,z) cartesian location and we want them as vectors.
+    pcd.points = o3.utility.Vector3dVector(pcl[:,:3])
     # step 4 : for the first frame, add the pcd instance to visualization using add_geometry; for all other frames, use update_geometry instead
-
-    # step 5 : visualize point cloud and keep window open until right-arrow is pressed (key-code 262)
-
+    vis_lidar_pc.add_geometry(pcd) 
+   
+    # step 5 : visualize point cloud and keep window open until right-arrow is pressed (key-code 262) 
+    # GLFW_KEY code is used in Open3D library: https://www.glfw.org/docs/latest/group__keys.html
+    right_arrow_key_code = 262
+    space_bar_key_code = 32
+    vis_lidar_pc.register_key_callback(right_arrow_key_code, next_frame_callback)
+    vis_lidar_pc.register_key_callback(space_bar_key_code, exit_callback)
+    vis_lidar_pc.update_renderer()
+    vis_lidar_pc.poll_events()    
+    vis_lidar_pc.run()  
     #######
     ####### ID_S1_EX2 END #######
 
@@ -63,8 +77,7 @@ def show_range_image(frame, lidar_name):
 
     # step 1 : extract lidar data and range image for the roof-mounted lidar
     roof_lidar_data = waymo_utils.get(frame.lasers, lidar_name)
-    ri, _, _ = waymo_utils.parse_range_image_and_camera_projection(
-        roof_lidar_data)
+    ri, _, _ = waymo_utils.parse_range_image_and_camera_projection(roof_lidar_data)
     # step 2 : extract the range and the intensity channel from the range image
     # recall that range image contains the following data: [range, intensity, elongation, is_in_no_label_zone]
     range_ch = ri[:, :, 0]
@@ -185,3 +198,6 @@ def bev_from_pcl(lidar_pcl, configs):
     bev_maps = torch.from_numpy(bev_maps)  # create tensor from birds-eye view
     input_bev_maps = bev_maps.to(configs.device, non_blocking=True).float()
     return input_bev_maps
+
+if __name__ == '__main__':
+    hello()
