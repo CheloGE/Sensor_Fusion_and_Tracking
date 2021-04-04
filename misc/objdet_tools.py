@@ -380,7 +380,7 @@ def show_objects_labels_in_bev(detections, object_labels, bev_maps, configs):
 def show_objects_in_bev_labels_in_camera(detections, bev_maps, image, object_labels, object_labels_valid, camera_calibration, configs):
 
     # project detections into birds-eye view
-    bev_map = (bev_maps.squeeze().permute(1, 2, 0).numpy() * 255).astype(np.uint8)
+    bev_map = (bev_maps.squeeze().permute(1, 2, 0).cpu().numpy() * 255).astype(np.uint8)
     bev_map = cv2.resize(bev_map, (configs.bev_width, configs.bev_height))
     project_detections_into_bev(bev_map, detections, configs)
     bev_map = cv2.rotate(bev_map, cv2.ROTATE_180)

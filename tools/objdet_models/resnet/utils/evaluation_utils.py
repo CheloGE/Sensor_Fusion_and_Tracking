@@ -16,6 +16,7 @@ import torch
 import numpy as np
 import torch.nn.functional as F
 import cv2
+from tools.objdet_models.resnet.utils.torch_utils import _sigmoid
 
 def _nms(heat, kernel=3):
     pad = (kernel - 1) // 2
@@ -75,7 +76,8 @@ def _topk_channel(scores, K=40):
 
 def decode(hm_cen, cen_offset, direction, z_coor, dim, K=40):
     batch_size, num_classes, height, width = hm_cen.size()
-
+    hm_cen = _sigmoid(hm_cen)
+    cen_offset = _sigmoid(cen_offset)
     hm_cen = _nms(hm_cen)
     scores, inds, clses, ys, xs = _topk(hm_cen, K=K)
     if cen_offset is not None:
@@ -115,6 +117,7 @@ def post_processing(detections, configs):
     # (scores-0:1, xs-1:2, ys-2:3, z_coor-3:4, dim-4:7, direction-7:9, clses-9:10)
     :return:
     """
+    detections = detections.cpu().numpy()
     ret = []
     for i in range(detections.shape[0]):
         top_preds = {}

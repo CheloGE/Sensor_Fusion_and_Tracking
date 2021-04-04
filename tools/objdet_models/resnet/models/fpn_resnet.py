@@ -130,7 +130,7 @@ class PoseResNet(nn.Module):
         self.conv_up_level2 = nn.Conv2d(384, 128, kernel_size=1, stride=1, padding=0)
         self.conv_up_level3 = nn.Conv2d(192, 64, kernel_size=1, stride=1, padding=0)
 
-        fpn_channels = [256, 128, 64]
+        fpn_channels = [256, 128, 64] # feature pyramid network
         for fpn_idx, fpn_c in enumerate(fpn_channels):
             for head in sorted(self.heads):
                 num_output = self.heads[head]

@@ -53,7 +53,7 @@ sys.path.append(os.getcwd())
 data_filename = 'training_segment-1005081002024129653_5313_150_5333_150_with_camera_labels.tfrecord'  # Sequence 1
 #data_filename = 'training_segment-10072231702153043603_5725_000_5745_000_with_camera_labels.tfrecord' # Sequence 2
 #data_filename = 'training_segment-10963653239323173269_1924_000_1944_000_with_camera_labels.tfrecord' # Sequence 3
-show_only_frames = [10, 11]  # show only frames in interval for debugging
+show_only_frames = [50, 51]  # show only frames in interval for debugging
 
 # Prepare Waymo Open Dataset file for loading
 # adjustable path in case this script is called from another working directory
@@ -66,7 +66,7 @@ datafile_iter = iter(datafile)  # initialize dataset iterator
 
 # Initialize object detection
 # options are 'darknet', 'fpn_resnet'
-configs_det = det.load_configs(model_name='darknet')
+configs_det = det.load_configs(model_name='fpn_resnet')
 model_det = det.create_model(configs_det)
 
 # True = use groundtruth labels as objects, False = use model-based detection
@@ -80,13 +80,13 @@ lidar = None  # init lidar sensor object
 camera = None  # init camera sensor object
 
 # Selective execution and visualization
-exec_detection = []  # options are 'bev_from_pcl', 'detect_objects', 'validate_object_labels', 'measure_detection_performance'; options not in the list will be loaded from file
+exec_detection = ['bev_from_pcl', 'detect_objects']  # options are 'bev_from_pcl', 'detect_objects', 'validate_object_labels', 'measure_detection_performance'; options not in the list will be loaded from file
 exec_tracking = []  # options are 'perform_tracking'
 # options are 'show_range_image', 'show_bev', 'show_pcl', 'show_labels_in_image', 'show_objects_and_labels_in_bev', 'show_objects_in_bev_labels_in_camera', 'show_tracks', 'show_detection_performance', 'make_tracking_movie'
-exec_visualization = ['bev_from_pcl']
+exec_visualization = ['show_objects_in_bev_labels_in_camera']
 exec_list = make_exec_list(exec_detection, exec_tracking, exec_visualization)
 # set pause time between frames in ms (0 = stop between frames until key is pressed)
-vis_pause_time = 1
+vis_pause_time = 0
 
 
 ##################
