@@ -47,19 +47,24 @@ def measure_detection_performance(detections, labels, labels_valid, min_iou=0.5)
             ####### ID_S4_EX1 START #######     
             #######
             print("student task ID_S4_EX1 ")
-
-            ## step 1 : extract the four corners of the current label bounding-box
             
+            ## step 1 : extract the four corners of the current label bounding-box
+            label_corners = tools.compute_box_corners(label.box.center_x,label.box.center_y, label.box.width, label.box.length, label.box.heading)
             ## step 2 : loop over all detected objects
-
+            for detection in detections:
                 ## step 3 : extract the four corners of the current detection
-                
+                type_class, x_center, y_center, z_center, box_h, box_w, box_l, yaw = detection
+                predicted_corners = tools.compute_box_corners(x_center, y_center, box_w, box_l, yaw)
                 ## step 4 : computer the center distance between label and detection bounding-box in x, y, and z
-                
+                delta_x_center, delta_y_center, delta_z_center = [label.box.center_x - x_center, label.box.center_y - y_center, label.box.center_z - z_center]
                 ## step 5 : compute the intersection over union (IOU) between label and detection bounding-box
-                
+                iou = tools.calculate_iou(label_corners, predicted_corners)
                 ## step 6 : if IOU exceeds min_iou threshold, store [iou,dist_x, dist_y, dist_z] in matches_lab_det and increase the TP count
-                
+                if iou > min_iou:
+                    matches_lab_det.append([iou, delta_x_center, delta_y_center, delta_z_center])
+                    true_positives += 1
+            
+            
             #######
             ####### ID_S4_EX1 END #######     
             
@@ -90,7 +95,6 @@ def measure_detection_performance(detections, labels, labels_valid, min_iou=0.5)
     
     pos_negs = [all_positives, true_positives, false_negatives, false_positives]
     det_performance = [ious, center_devs, pos_negs]
-    
     return det_performance
 
 

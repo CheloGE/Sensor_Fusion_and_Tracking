@@ -434,3 +434,9 @@ def project_labels_into_camera(camera_calibration, image, labels, labels_valid, 
     else:
         return image
 
+# Code taken from https://stackoverflow.com/questions/25349178/calculating-percentage-of-bounding-box-overlap-for-image-detector-evaluation
+def calculate_iou(box_1_corners, box_2_corners):
+    poly_1 = Polygon(box_1_corners)
+    poly_2 = Polygon(box_2_corners)
+    iou = poly_1.intersection(poly_2).area / poly_1.union(poly_2).area
+    return iou
