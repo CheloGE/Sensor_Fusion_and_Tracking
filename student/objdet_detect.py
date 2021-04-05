@@ -107,7 +107,8 @@ def load_configs_model(model_name='darknet', configs=None):
     configs.no_cuda = False # if true, cuda is not used
     configs.gpu_idx = 0  # GPU index to use.
     configs.device = torch.device('cpu' if configs.no_cuda else 'cuda:{}'.format(configs.gpu_idx))
-
+    # iou threshold
+    configs.min_iou = configs.conf_thresh
     return configs
 
 
@@ -231,12 +232,12 @@ def detect_objects(input_bev_maps, model, configs):
             scores, x_center, y_center, z_center, box_h, box_w, box_l, yaw = vehicle_obj
             x_range = configs.lim_x[1] - configs.lim_x[0]
             y_range = configs.lim_y[1] - configs.lim_y[0]
-            x_conversion = (x_range/configs.bev_height)
-            y_conversion = (y_range/configs.bev_width)
+            x_conversion = x_range/configs.bev_height
+            y_conversion = y_range/configs.bev_width
             
             x_center_discrete = x_conversion * y_center 
             y_center_discrete = y_conversion * x_center - y_range / 2
-            
+            #z_center_discrete = z_center + configs.lim_z[0]
             box_w_discrete = y_conversion * box_w 
             box_l_discrete = x_conversion * box_l
             ## step 4 : append the current object to the 'objects' array
