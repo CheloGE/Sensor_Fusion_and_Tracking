@@ -174,7 +174,7 @@ def create_model(configs):
 
 # detect trained objects in birds-eye view
 def detect_objects(input_bev_maps, model, configs):
-
+    type_class = 1 # [0: pedestrian, 1: vehicle, 2: bycicle]
     # deactivate autograd engine during test to reduce memory usage and speed up computations
     with torch.no_grad():  
 
@@ -195,14 +195,13 @@ def detect_objects(input_bev_maps, model, configs):
                     x, y, w, l, im, re, _, _, _ = obj
                     yaw = np.arctan2(im, re)
                     detections.append([1, x, y, 0.0, 1.50, w, l, yaw])    
-
+            detections = np.array(detections)
         elif 'fpn_resnet' in configs.arch:
             # decode output and perform post-processing
             
             ####### ID_S3_EX1-5 START #######     
             #######
             print("student task ID_S3_EX1-5")
-            type_class = 1 # [0: pedestrian, 1: vehicle, 2: bycicle]
             detections = decode(outputs['hm_cen'], 
                                 outputs['cen_offset'], 
                                 outputs['direction'],
