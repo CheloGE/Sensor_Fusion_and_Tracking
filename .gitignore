@@ -127,3 +127,12 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# results files
+*.pkl
+*.zip
+*.pth
+*.cfg
+
+# dataset
+*.tfrecord
