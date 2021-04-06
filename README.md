@@ -69,12 +69,9 @@ Also, the project code contains various tasks, which are detailed step-by-step i
 ### Cloning the Project
 In order to create a local copy of the project, please click on "Code" and then "Download ZIP". Alternatively, you may of-course use GitHub Desktop or Git Bash for this purpose. 
 
-### Python
-The project has been written using Python 3.7. Please make sure that your local installation is equal or above this version. 
+### Docker file
 
-### Package Requirements
-All dependencies required for the project have been listed in the file `requirements.txt`. You may either install them one-by-one using pip or you can use the following command to install them all at once: 
-`pip3 install -r requirements.txt` 
+The following [Dockerfile](./Dockerfile)
 
 ### Waymo Open Dataset Reader
 The Waymo Open Dataset Reader is a very convenient toolbox that allows you to access sequences from the Waymo Open Dataset without the need of installing all of the heavy-weight dependencies that come along with the official toolbox. The installation instructions can be found in `tools/waymo_reader/README.md`. 
