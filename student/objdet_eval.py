@@ -82,24 +82,26 @@ def measure_detection_performance(detections, labels, labels_valid, min_iou=0.5)
     # compute positives and negatives for precision/recall
     
     ## step 1 : compute the total number of positives present in the scene
-    all_positives = 0
+    
+    all_positives = np.count_nonzero(labels_valid == True)
 
     ## step 2 : compute the number of false negatives
-    false_negatives = 0
+    false_negatives = all_positives - true_positives
 
     ## step 3 : compute the number of false positives
-    false_positives = 0
+    false_positives = len(detections) - true_positives
     
     #######
     ####### ID_S4_EX2 END #######     
     
     pos_negs = [all_positives, true_positives, false_negatives, false_positives]
     det_performance = [ious, center_devs, pos_negs]
+
     return det_performance
 
 
 # evaluate object detection performance based on all frames
-def compute_performance_stats(det_performance_all):
+def compute_performance_stats(det_performance_all, configs_det):
 
     # extract elements
     ious = []
@@ -113,18 +115,18 @@ def compute_performance_stats(det_performance_all):
     ####### ID_S4_EX3 START #######     
     #######    
     print('student task ID_S4_EX3')
-
-    ## step 1 : extract the total number of positives, true positives, false negatives and false positives
     
+    ## step 1 : extract the total number of positives, true positives, false negatives and false positives
+    [positives, true_positives, false_negatives, false_positives] = np.sum(np.asarray(pos_negs), axis = 0)       
+
     ## step 2 : compute precision
-    precision = 0.0
+    precision = float(true_positives) / (true_positives + false_positives)
 
     ## step 3 : compute recall 
-    recall = 0.0
-
+    recall = float(true_positives) / (true_positives + false_negatives) 
     #######    
     ####### ID_S4_EX3 END #######     
-    print('precision = ' + str(precision) + ", recall = " + str(recall))   
+    print('precision = ' + str(precision) + ", recall = " + str(recall) + ", conf_thresh = " + str(configs_det.conf_thresh))   
 
     # serialize intersection-over-union and deviations in x,y,z
     ious_all = [element for tupl in ious for element in tupl]
