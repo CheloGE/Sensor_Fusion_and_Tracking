@@ -71,7 +71,26 @@ In order to create a local copy of the project, please click on "Code" and then 
 
 ### Docker file
 
-The following [Dockerfile](./Dockerfile)
+The following [Dockerfile](./Dockerfile) contains all the environment required to run this project. 
+
+* You must install Docker first to run the environment.
+
+* To build it you must run the following line:
+
+`docker build -t <name_of_the_image_you_want>:<version of the image you want(optional)> <path_to_the_Dockerfile>`
+
+  * example:
+
+
+    `docker build -t sensor_fusion:v-1.0 .`
+
+* Once you have the image you must authorized access to your display from hostmachine with the following command line:
+
+  `xhost +`
+
+* Finally you  must run your docker image with the following arguments to let the container use the hostmachine's visualization tools.
+
+  `docker run --name senfustrac -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY -v `pwd`:/project -it --env QT_X11_NO_MITSHM=1 --gpus all sensor_fusion:v-1.0`
 
 ### Waymo Open Dataset Reader
 The Waymo Open Dataset Reader is a very convenient toolbox that allows you to access sequences from the Waymo Open Dataset without the need of installing all of the heavy-weight dependencies that come along with the official toolbox. The installation instructions can be found in `tools/waymo_reader/README.md`. 
