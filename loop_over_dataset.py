@@ -156,9 +156,12 @@ while True:
                     lidar_bev, model_det, configs_det)
             else:
                 print('loading detected objects from result file')
-                detections = load_object_from_file(
-                    results_fullpath, data_filename, 'detections_' + configs_det.arch + '_' + str(configs_det.conf_thresh), cnt_frame)
-
+                if 'perform_tracking' in exec_list:
+                    detections = load_object_from_file(results_fullpath, data_filename, 'detections', cnt_frame )
+                else:
+                    detections = load_object_from_file(
+                        results_fullpath, data_filename, 'detections_' + configs_det.arch + '_' + str(configs_det.conf_thresh), cnt_frame)
+                
         # Validate object labels
         if 'validate_object_labels' in exec_list:
             print("validating object labels")
@@ -176,9 +179,12 @@ while True:
                 detections, frame.laser_labels, valid_label_flags, configs_det.min_iou)
         else:
             print('loading detection performance measures from file')
-            det_performance = load_object_from_file(
-                results_fullpath, data_filename, 'det_performance_' + configs_det.arch + '_' + str(configs_det.conf_thresh), cnt_frame)
-
+            if 'perform_tracking' in exec_list:
+                det_performance = load_object_from_file(results_fullpath, data_filename, 'det_performance' , cnt_frame)
+            else:
+                det_performance = load_object_from_file(
+                    results_fullpath, data_filename, 'det_performance_' + configs_det.arch + '_' + str(configs_det.conf_thresh), cnt_frame)
+            
         # store all evaluation results in a list for performance assessment at the end
         det_performance_all.append(det_performance)
 
