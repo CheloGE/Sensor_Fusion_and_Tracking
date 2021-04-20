@@ -50,10 +50,10 @@ sys.path.append(os.getcwd())
 # Set parameters and perform initializations
 
 # Select Waymo Open Dataset file and frame numbers
-#data_filename = 'training_segment-1005081002024129653_5313_150_5333_150_with_camera_labels.tfrecord'  # Sequence 1
-data_filename = 'training_segment-10072231702153043603_5725_000_5745_000_with_camera_labels.tfrecord' # Sequence 2
+data_filename = 'training_segment-1005081002024129653_5313_150_5333_150_with_camera_labels.tfrecord'  # Sequence 1
+#data_filename = 'training_segment-10072231702153043603_5725_000_5745_000_with_camera_labels.tfrecord' # Sequence 2
 #data_filename = 'training_segment-10963653239323173269_1924_000_1944_000_with_camera_labels.tfrecord' # Sequence 3
-show_only_frames = [65, 100]  # show only frames in interval for debugging
+show_only_frames = [0, 200]  # show only frames in interval for debugging
 
 # Prepare Waymo Open Dataset file for loading
 # adjustable path in case this script is called from another working directory
@@ -68,7 +68,7 @@ datafile_iter = iter(datafile)  # initialize dataset iterator
 # options are 'darknet', 'fpn_resnet'
 configs_det = det.load_configs(model_name='fpn_resnet')
 model_det = det.create_model(configs_det)
-configs_det.lim_y = [-5, 15]
+configs_det.lim_y = [-25, 25] #controls the output width range plot 
 
 # True = use groundtruth labels as objects, False = use model-based detection
 configs_det.use_labels_as_objects = False
