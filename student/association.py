@@ -37,13 +37,13 @@ class Association:
         # - replace association_matrix with the actual association matrix based on Mahalanobis distance (see below) for all tracks and all measurements
         # - update list of unassigned measurements and unassigned tracks
         ############
-        
+              
         No_tracks = len(track_list)
         No_meas = len(meas_list)
         
         # initialize unassigned tracks and unassigned measurements lists to be updated in the "associate_and_update" method
         self.unassigned_tracks = list(range(No_tracks)) 
-        self.unassigned_meas = list(range(No_tracks)) 
+        self.unassigned_meas = list(range(No_meas)) 
         # initialize association matrix
         self.association_matrix = np.inf*np.ones((No_tracks, No_meas))
 
@@ -52,10 +52,9 @@ class Association:
             for j in range(No_meas):
                 meas = meas_list[j]
                 dist = self.MHD(track,meas,KF)
-                if self.gating(dist):
-                    self.association_matrix[i][j] = dist
-
-
+                if self.gating(dist, meas.sensor):
+                    self.association_matrix[i][j] = dist       
+        
         ############
         # END student code
         ############ 
@@ -111,7 +110,7 @@ class Association:
             DOF = 1 # camera DOF,features = (x,y)
         
         # calculate the Inverse Cumulative Distribution Function (I-CDF) for certain percentile (gating_threshold)
-        limit = chi2.ppf(gating_threshold, df=DOF)
+        limit = chi2.ppf(params.gating_threshold, df=DOF)
 
         if MHD < limit:
             return True
