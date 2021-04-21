@@ -48,7 +48,17 @@ class Sensor:
         # otherwise False.
         ############
 
-        return True
+        ## The following code is based on lessons related to visibility
+        homog_pos_veh = np.ones((4,1))
+        homog_pos_veh[0:3] = x[0:3]
+        homog_pos_sens = self.veh_to_sens*homog_pos_veh
+        visible = False
+        
+        if homog_pos_sens[0] > 0: # to avoid division by zero
+            alpha = np.arctan(homog_pos_sens[1]/homog_pos_sens[0])
+            if  alpha > self.fov[0] and alpha<self.fov[1]:
+                visible = True
+        return visible
         
         ############
         # END student code
@@ -70,8 +80,21 @@ class Sensor:
             # - make sure to not divide by zero, raise an error if needed
             # - return h(x)
             ############
+            ## code based on Jacobian lessons
+            hx = np.zeros((2,1))
+            homog_pos_veh = np.zeros((4,1)) 
+            homog_pos_veh[0:3] = x[0:3]
+            homog_pos_sens = self.veh_to_sens*homog_pos_veh
+            # sanity check to avoid division by zero
+            if homog_pos_sens[0]==0:
+                raise NameError('function h(x) not defined for pos_x = 0')
+            else:
+                # Projection formula of a 3D point to 2D image plane (pinhole model)
+                # (x,y,z) -> (f*y/x, f*z/x)
+                hx[0,0] = self.c_i - self.f_i*homog_pos_sens[1]/homog_pos_sens[0]
+                hx[1,0] = self.c_j - self.f_j*homog_pos_sens[2]/homog_pos_sens[0]
 
-            pass
+                return hx
         
             ############
             # END student code
@@ -115,9 +138,9 @@ class Sensor:
         # TODO Step 4: remove restriction to lidar in order to include camera as well
         ############
         
-        if self.name == 'lidar':
-            meas = Measurement(num_frame, z, self)
-            meas_list.append(meas)
+        
+        meas = Measurement(num_frame, z, self)
+        meas_list.append(meas)
         return meas_list
         
         ############
@@ -154,8 +177,13 @@ class Measurement:
             ############
             # TODO Step 4: initialize camera measurement including z, R, and sensor 
             ############
-
-            pass
+            self.z = np.zeros((sensor.dim_meas,1))
+            self.z[0] = z[0] 
+            self.z[1] = z[1]
+            self.sensor = sensor
+            self.R = np.matrix([[params.sigma_cam_i**2, 0                    ],
+                               [                    0, params.sigma_cam_j**2]])
+            
         
             ############
             # END student code
