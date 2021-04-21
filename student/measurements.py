@@ -82,7 +82,7 @@ class Sensor:
             ############
             ## code based on Jacobian lessons
             hx = np.zeros((2,1))
-            homog_pos_veh = np.zeros((4,1)) 
+            homog_pos_veh = np.ones((4,1)) 
             homog_pos_veh[0:3] = x[0:3]
             homog_pos_sens = self.veh_to_sens*homog_pos_veh
             # sanity check to avoid division by zero
