@@ -84,7 +84,7 @@ camera = None  # init camera sensor object
 exec_detection = []  # options are 'bev_from_pcl', 'detect_objects', 'validate_object_labels', 'measure_detection_performance'; options not in the list will be loaded from file
 exec_tracking = ['perform_tracking']  # options are 'perform_tracking'
 # options are 'show_range_image', 'show_bev', 'show_pcl', 'show_labels_in_image', 'show_objects_and_labels_in_bev', 'show_objects_in_bev_labels_in_camera', 'show_tracks', 'show_detection_performance', 'make_tracking_movie'
-exec_visualization = ['show_tracks']
+exec_visualization = ['show_tracks', 'make_tracking_movie']
 exec_list = make_exec_list(exec_detection, exec_tracking, exec_visualization)
 # set pause time between frames in ms (0 = stop between frames until key is pressed)
 vis_pause_time = 0

@@ -85,7 +85,6 @@ class Track:
             M_rot = meas.sensor.sens_to_veh
             self.yaw = np.arccos(M_rot[0,0]*np.cos(meas.yaw) + M_rot[0,1]*np.sin(meas.yaw)) # transform rotation from sensor to vehicle coordinates
         
-        
 ###################        
 
 class Trackmanagement:
@@ -112,15 +111,13 @@ class Trackmanagement:
                 if meas_list[0].sensor.in_fov(track.x):
                     # your code goes here
                     track.score -= 1/params.window
-                    
-
+        
         # delete old tracks   
-
         for track in self.track_list:
             x_pred_variance = track.P[0,0]
             y_pred_variance = track.P[1,1]
             if (track.score <= params.delete_threshold and track.state == 'confirmed') or \
-                    (x_pred_variance>params.max_P or x_pred_variance>params.max_P):
+                    x_pred_variance>params.max_P or y_pred_variance>params.max_P or track.score<0:
                 self.delete_track(track)
 
 

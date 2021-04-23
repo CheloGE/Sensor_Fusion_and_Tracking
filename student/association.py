@@ -22,7 +22,6 @@ SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
 import misc.params as params 
-
 class Association:
     '''Data association class with single nearest neighbor association and gating based on Mahalanobis distance'''
     def __init__(self):
