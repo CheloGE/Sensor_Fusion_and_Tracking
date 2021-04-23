@@ -117,7 +117,7 @@ class Trackmanagement:
             x_pred_variance = track.P[0,0]
             y_pred_variance = track.P[1,1]
             if (track.score <= params.delete_threshold and track.state == 'confirmed') or \
-                    x_pred_variance>params.max_P or y_pred_variance>params.max_P or track.score<0:
+                    x_pred_variance>params.max_P or y_pred_variance>params.max_P:
                 self.delete_track(track)
 
 
