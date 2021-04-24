@@ -14,6 +14,8 @@ The project consists of two major parts:
 
 2. **Object tracking** : In this part, an extended Kalman filter is used to track vehicles over time, based on the lidar detections fused with camera detections. Data association and track management are implemented as well.
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; To check more details in this part, please refer to the [Sensor_fusion_tracking_writeup.md](Sensor_fusion_tracking_writeup.md)
+
 The following diagram contains an outline of the data flow and of the individual steps that make up the algorithm. 
 
 <img src="img/img_title_2_new.png"/>
